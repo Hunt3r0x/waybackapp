@@ -1,0 +1,14 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Waybackurls</title>
+  </head>
+  <body>
+    <h1>Waybackurls</h1>
+    <ul>
+      {% for url in urls %}
+        <li><a href="{{ url }}">{{ url }}</a></li>
+      {% endfor %}
+    </ul>
+  </body>
+</html>
