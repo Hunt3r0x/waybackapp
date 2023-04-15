@@ -1,14 +1,119 @@
 <!DOCTYPE html>
 <html>
-  <head>
-    <title>Waybackurls</title>
-  </head>
-  <body>
+<style>
+  * {
+    box-sizing: border-box;
+    font-family: Arial, sans-serif;
+    margin: 0;
+    padding: 0;
+  }
+
+  body {
+    background-color: #f5f5f5;
+  }
+
+  .container {
+    max-width: 600px;
+    margin: 0 auto;
+    padding: 20px;
+    background-color: #fff;
+    border-radius: 10px;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+  }
+
+  h1 {
+    text-align: center;
+    margin-bottom: 20px;
+  }
+
+  form {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+
+  label {
+    font-weight: bold;
+    margin-bottom: 10px;
+  }
+
+  input[type="text"],
+  button[type="submit"] {
+    padding: 10px;
+    font-size: 16px;
+    border: none;
+    border-radius: 5px;
+    margin-bottom: 10px;
+  }
+
+  input[type="text"] {
+    width: 100%;
+  }
+
+  button[type="submit"] {
+    background-color: #007bff;
+    color: #fff;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+  }
+
+  button[type="submit"]:hover {
+    background-color: #0062cc;
+  }
+</style>
+
+<head>
+  <title>Waybackurls</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+  <div class="container">
     <h1>Waybackurls</h1>
-    <form action="/waybackurls" method="post">
+    <form id="waybackurls-form">
       <label for="url">Enter website URL:</label>
       <input type="text" id="url" name="url" required>
-      <button type="submit">Get waybackurls</button>
+      <button type="submit" id="submit-btn">Get waybackurls</button>
     </form>
-  </body>
+    <div id="results"></div>
+  </div>
+  <script src="script.js"></script>
+  <script>
+    const form = document.getElementById('waybackurls-form');
+    const urlInput = document.getElementById('url');
+    const resultsContainer = document.getElementById('results');
+
+    form.addEventListener('submit', async (e) => {
+      e.preventDefault();
+
+      const url = urlInput.value;
+
+      try {
+        const response = await fetch('/waybackurls', {
+          method: 'POST',
+          body: JSON.stringify({ url }),
+          headers: {
+            'Content-Type': 'application/json',
+          },
+        });
+
+        const data = await response.json();
+
+        resultsContainer.innerHTML = '';
+
+        for (const result of data.results) {
+          const link = document.createElement('a');
+          link.href = result;
+          link.textContent = result;
+          resultsContainer.appendChild(link);
+          resultsContainer.appendChild(document.createElement('br'));
+        }
+      } catch (error) {
+        console.error(error);
+        resultsContainer.textContent = 'An error occurred while fetching the waybackurls.';
+      }
+    });
+  </script>
+</body>
+
 </html>
